@@ -5,9 +5,7 @@ dead ends. This makes writing the README's "Key decisions & trade-offs" and
 "What I'd improve" sections much easier later, and helps you prep for the
 interview round.
 
-## Day 1
-
-## Day 1 — Setup
+# workFlow
 
 - Got API keys: Gemini, Financial Modeling Prep (financials), Tavily (news).
 - Built frontend (React/Vite) and backend (Express) as separate apps for easier debugging.
@@ -30,5 +28,10 @@ interview round.
 - Tested "Tesla" → PASS, 70% confidence. Reasoning correctly used rubric scores and named real risks.
 - Confirms pipeline works end-to-end. Next: wire real FMP + Tavily data into research nodes.
 
-## Day 2
--
+## Day 1 (cont.) — Pushed to GitHub
+
+- Initialized git in the project root.
+- Checked git status before committing — confirmed .env and node_modules
+  were correctly excluded via .gitignore.
+- Made initial commit and pushed to a private GitHub repo.
+- Renamed project folder to ai-intern-assignment for clarity.
