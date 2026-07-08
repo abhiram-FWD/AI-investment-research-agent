@@ -1,13 +1,25 @@
 import { ChatGroq } from "@langchain/groq";
 import { z } from "zod";
 
-function computeScoreBreakdown(financials) {
-  const growth = Math.min(10, Math.max(0, financials.revenueGrowthYoY * 40));
-  const valuation = Math.min(10, Math.max(0, 10 - financials.peRatio / 5));
-  const risk = Math.min(10, Math.max(0, 10 - financials.debtToEquity * 10));
-  const moat = 5; // TODO: derive from competitors node instead of hardcoding
+function computeScoreBreakdown(financials, competitors) {
+  if (!financials || financials.available === false) {
+    return { growth: 0, valuation: 0, risk: 0, moat: 0 };
+  }
+
+  const peRatio = financials.peRatio ?? 30;
+  const beta = financials.beta ?? 1;
+
+  const growth = 5;
+  const valuation = clamp(10 - peRatio / 5);
+  const risk = clamp(10 - beta * 5);
+  const moat = competitors?.available ? 5 : 4;
 
   return { growth, valuation, risk, moat };
+}
+
+function clamp(n) {
+  if (Number.isNaN(n) || n == null) return 0;
+  return Math.min(10, Math.max(0, n));
 }
 
 const WriteupSchema = z.object({
@@ -19,13 +31,21 @@ const WriteupSchema = z.object({
 export async function decide(state) {
   console.log(`[decide] scoring ${state.resolvedEntity.name}`);
 
-  const scoreBreakdown = computeScoreBreakdown(state.financials);
+  const scoreBreakdown = computeScoreBreakdown(
+    state.financials,
+    state.competitors,
+  );
   const overallScore =
     (scoreBreakdown.growth +
       scoreBreakdown.valuation +
       scoreBreakdown.risk +
       scoreBreakdown.moat) /
     4;
+
+  const dataCaveat =
+    state.financials?.available === false
+      ? "\nNOTE: Real financial data was unavailable for this company. Scores are defaulted to 0 and this verdict should be treated as low-confidence / data-limited. Say so explicitly in your reasoning."
+      : "\nNOTE: Growth score is neutral (5/10) because revenue growth data requires a paid FMP plan and wasn't available. Valuation is based on P/E, risk is based on beta (volatility). Mention this data limitation briefly in your reasoning.";
 
   const model = new ChatGroq({
     apiKey: process.env.GROQ_API_KEY,
@@ -38,6 +58,7 @@ export async function decide(state) {
 Rubric scores (0-10 each, already computed, do not change them):
 ${JSON.stringify(scoreBreakdown, null, 2)}
 Overall average: ${overallScore.toFixed(1)}
+${dataCaveat}
 
 Investment thesis: ${JSON.stringify(state.thesis)}
 
