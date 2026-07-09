@@ -24,23 +24,23 @@ export async function disambiguate(state) {
       };
     }
 
+    // FMP's field name for exchange varies between endpoints/versions, so
+    // check both possibilities rather than assuming one.
+    const exchangeOf = (r) => r.exchangeShortName || r.exchange || "";
+
+    const isUS = (r) => ["NASDAQ", "NYSE"].includes(exchangeOf(r));
+    const isCleanSymbol = (r) => !r.symbol.includes(".");
+
     const best =
-      results.find(
-        (r) =>
-          (r.exchangeShortName === "NASDAQ" ||
-            r.exchangeShortName === "NYSE") &&
-          !r.symbol.includes("."),
-      ) ||
-      results.find(
-        (r) =>
-          r.exchangeShortName === "NASDAQ" || r.exchangeShortName === "NYSE",
-      ) ||
+      results.find((r) => isUS(r) && isCleanSymbol(r)) ||
+      results.find((r) => isCleanSymbol(r)) ||
+      results.find((r) => isUS(r)) ||
       results[0];
 
     const resolved = {
       name: best.name,
       ticker: best.symbol,
-      exchange: best.exchangeShortName,
+      exchange: exchangeOf(best) || "unknown",
       found: true,
     };
 
@@ -48,7 +48,7 @@ export async function disambiguate(state) {
       resolvedEntity: resolved,
       reasoningTrace: [
         ...state.reasoningTrace,
-        `Resolved "${state.companyName}" to ${resolved.name} (${resolved.ticker}, ${resolved.exchange || "unknown exchange"}).`,
+        `Resolved "${state.companyName}" to ${resolved.name} (${resolved.ticker}, ${resolved.exchange}).`,
       ],
     };
   } catch (err) {

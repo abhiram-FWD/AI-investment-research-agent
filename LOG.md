@@ -1,37 +1,61 @@
-# Build log
+# Build Log
 
-Keep a running note here as you build — prompts you used, decisions you made,
-dead ends. This makes writing the README's "Key decisions & trade-offs" and
-"What I'd improve" sections much easier later, and helps you prep for the
-interview round.
-
-# workFlow
-
+## Day 1 — Setup
 - Got API keys: Gemini, Financial Modeling Prep (financials), Tavily (news).
 - Built frontend (React/Vite) and backend (Express) as separate apps for easier debugging.
 - Built the agent with LangGraph.js: disambiguate → research (financials, news, competitors, in parallel) → synthesize → decide.
-- Research nodes still return placeholder data. Only synthesize/decide make real AI calls so far.
+- Research nodes started as stub/placeholder data to get the pipeline working end-to-end first.
 
 ## Key decision: rubric-based verdict
 - Score (growth, valuation, risk, moat) is calculated by plain code, not the AI.
 - AI's only job: explain the score in plain language. Keeps the verdict auditable, not a black box.
 
 ## Problem: Gemini rate limits
-- Hit 429 errors almost immediately.
-- Cause: free tier capped at 5 requests/min, 20/day — too low for active testing.
-- Can't pay for higher tier, so switched providers instead.
+- Hit 429 errors almost immediately — free tier capped at 5 requests/min, 20/day.
+- Couldn't pay for a higher tier, so switched providers instead of fighting the limit.
 - Moved to Groq (Llama 3.3 70B). Free tier: 30 req/min, ~1,000+/day, no card needed.
 - Minor snag: had to install an older Groq package version (0.2.4) to avoid a dependency conflict with LangGraph.
-- Only 2 files changed (~4 lines each). LangGraph structure untouched.
+- Only 2 files changed. LangGraph structure untouched.
 
 ## First successful run
 - Tested "Tesla" → PASS, 70% confidence. Reasoning correctly used rubric scores and named real risks.
-- Confirms pipeline works end-to-end. Next: wire real FMP + Tavily data into research nodes.
+- Confirmed pipeline works end-to-end with stub research data.
 
-## Day 1 (cont.) — Pushed to GitHub
+## Pushed to GitHub
+- Checked git status before committing — confirmed .env and node_modules excluded via .gitignore.
+- Made initial commit, pushed to a private repo.
 
-- Initialized git in the project root.
-- Checked git status before committing — confirmed .env and node_modules
-  were correctly excluded via .gitignore.
-- Made initial commit and pushed to a private GitHub repo.
-- Renamed project folder to ai-intern-assignment for clarity.
+## Day 2 — Landing page
+- Chose a dark, red-accent, glassmorphic style ("Red Noir") to fit the product idea.
+- Renamed product to "Alpha Invest AI" — stronger, more credible name.
+- Built with Antigravity: hero section, animated starfield background, "how it works" cards.
+- Initially added a demo mode with hardcoded data — later removed, see below.
+
+## Real API integration
+- Wired real FMP financial data and Tavily news/competitor data into the research nodes.
+- FMP's old /api/v3/ endpoints were deprecated (403 errors) — switched to /stable/ endpoints.
+- Found ratios-ttm and financial-growth require a paid FMP plan (402 errors) — switched to
+  quote and profile endpoints instead, which are free-tier. Rubric now uses P/E and beta
+  instead of revenue growth and debt/equity. Documented as a known data limitation.
+- Fixed ticker resolution: company name search was matching international listings
+  (e.g. AAPL.DE) instead of the main US ticker. Fixed by preferring NASDAQ/NYSE symbols.
+- Added news sentiment tagging — extended the existing Groq synthesis call to classify each
+  article as positive/negative/neutral, instead of a separate call or a bolted-on heuristic.
+  Keeps all AI reasoning in one place and costs no extra API calls.
+
+## UI expansion
+- Built new sections with Antigravity: Bull vs Bear case, News (with sentiment badges),
+  Competitors, and progress-bar score breakdown.
+- Caught and corrected an issue: Antigravity's update re-introduced hardcoded demo data and
+  a demo mode that had been deliberately removed earlier per explicit instruction. Reviewed
+  the diff, stripped it back out. Reminder to always check AI-generated changes, not just the
+  summary of what it says it did.
+- Changed PASS verdict color from red to yellow — red is now reserved only for real app
+  errors, so a legitimate "don't invest" verdict isn't visually confused with something broken.
+
+## Network issue: certificate errors on college wifi
+- Intermittent "self-signed certificate" errors on FMP/Tavily requests.
+- Diagnosed as college wifi's SSL-inspection proxy, not a code issue — confirmed by testing
+  on mobile hotspot instead, which worked cleanly.
+- Did not disable Node's certificate verification (insecure workaround). Using mobile hotspot
+  for local dev; won't affect production deployment since that runs in the cloud.s

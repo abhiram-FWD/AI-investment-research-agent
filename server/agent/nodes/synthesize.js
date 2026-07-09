@@ -22,15 +22,36 @@ FINANCIALS: ${JSON.stringify(state.financials)}
 RECENT NEWS: ${JSON.stringify(state.news)}
 COMPETITIVE LANDSCAPE: ${JSON.stringify(state.competitors)}
 
-Be specific and grounded in the data provided. Do not invent facts not present above.`;
+Be specific and grounded in the data provided. Do not invent facts not present above.
+
+For newsSentiment: classify each article in RECENT NEWS as positive, negative,
+or neutral for this company, using the article's exact title so it can be
+matched back. If RECENT NEWS is unavailable or empty, return an empty array.`;
 
   const thesis = await model.invoke(prompt);
 
+  // Merge sentiment back into the news array by matching title, so the
+  // frontend gets one clean `news` array with sentiment already attached —
+  // no separate lookup needed.
+  let enrichedNews = state.news;
+  if (Array.isArray(state.news) && Array.isArray(thesis.newsSentiment)) {
+    const sentimentMap = new Map(
+      thesis.newsSentiment.map((s) => [s.title, s.sentiment]),
+    );
+    enrichedNews = state.news.map((item) => ({
+      ...item,
+      sentiment: sentimentMap.get(item.title) || "neutral",
+    }));
+  }
+
+  const { newsSentiment, ...thesisWithoutSentiment } = thesis;
+
   return {
-    thesis,
+    thesis: thesisWithoutSentiment,
+    news: enrichedNews,
     reasoningTrace: [
       ...state.reasoningTrace,
-      "Synthesized bull/bear case from research (Groq / Llama 3.3 70B).",
+      "Synthesized bull/bear case and news sentiment from research (Groq / Llama 3.3 70B).",
     ],
   };
 }
