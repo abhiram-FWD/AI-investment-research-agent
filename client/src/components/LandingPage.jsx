@@ -48,7 +48,7 @@ export default function LandingPage({ onEnter }) {
         </p>
         <div className="hero-buttons">
           <button className="btn btn-primary" onClick={onEnter}>
-            Start Free Trial
+            Start Research
           </button>
         </div>
       </main>
