@@ -1,6 +1,6 @@
 # Build Log
 
-## Day 1 — Setup
+## Setup
 - Got API keys: Gemini, Financial Modeling Prep (financials), Tavily (news).
 - Built frontend (React/Vite) and backend (Express) as separate apps for easier debugging.
 - Built the agent with LangGraph.js: disambiguate → research (financials, news, competitors, in parallel) → synthesize → decide.
@@ -25,7 +25,7 @@
 - Checked git status before committing — confirmed .env and node_modules excluded via .gitignore.
 - Made initial commit, pushed to a private repo.
 
-## Day 2 — Landing page
+## Landing page
 - Chose a dark, red-accent, glassmorphic style ("Red Noir") to fit the product idea.
 - Renamed product to "Alpha Invest AI" — stronger, more credible name.
 - Built with Antigravity: hero section, animated starfield background, "how it works" cards.
@@ -58,4 +58,4 @@
 - Diagnosed as college wifi's SSL-inspection proxy, not a code issue — confirmed by testing
   on mobile hotspot instead, which worked cleanly.
 - Did not disable Node's certificate verification (insecure workaround). Using mobile hotspot
-  for local dev; won't affect production deployment since that runs in the cloud.s
+  for local dev; won't affect production deployment since that runs in the cloud.
