@@ -7,7 +7,7 @@ import CompetitorsSection from "./components/CompetitorsSection.jsx";
 import ResearchTrace from "./components/ResearchTrace.jsx";
 import LandingPage from "./components/LandingPage.jsx";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://ai-investment-research-agent-y7ya.onrender.com";
 
 export default function App() {
   const [view, setView] = useState("landing"); // 'landing' or 'app'
