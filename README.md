@@ -4,6 +4,14 @@
 An AI agent that researches a company and gives an INVEST/PASS verdict with reasoning.
 The verdict comes from a scoring rubric, not just an AI opinion — this keeps it auditable.
 
+## Live Demo
+- App: https://ai-investment-research-agent-flax.vercel.app/
+- API: https://ai-investment-research-agent-y7ya.onrender.com
+
+Note: the backend is on Render's free tier, which sleeps after 15 minutes of
+inactivity. The first search after a period of inactivity may take 30-50 seconds
+while it wakes up — this is expected, not a bug.
+
 ## How to run it
 
 ### Prerequisites
@@ -68,3 +76,10 @@ Invalid company name — ticker lookup failed, scores defaulted to 0. No crash, 
 - No decision framework was specified, so I built a rubric-based one for auditability.
 - Where FMP data was missing, I used the closest free substitute and documented it.
 - Invalid company names return a low-confidence PASS, not a crash.
+
+## Example Runs 
+**Tesla, Inc. (TSLA)** — PASS, 60% confidence, High Risk. Rubric: growth 5.0, valuation
+4.0, risk 1.0, moat 5.0 (overall 3.7/10). Real beta from FMP was high, correctly
+driving down the risk score — shows the rubric responding to genuinely different
+inputs across companies, not fixed output. Bull case cited real Q2 delivery numbers
+beating estimates; bear case cited discontinued luxury models and BYD competition.

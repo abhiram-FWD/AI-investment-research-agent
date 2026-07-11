@@ -4,14 +4,17 @@ How my idea started, how AI helped, and where it saved time.
 
 ## My original idea
 
-## My original idea
-
 When I got the assignment, I didn't have a fixed architecture in mind yet — I knew I
 needed something that takes a company name, researches it, and gives an invest/pass
 call. My first questions were more about how to stand out (most people would build
 something simple) than about the technical design. The multi-step LangGraph pipeline,
 the rubric-based verdict, and the tech choices came out of working through the
 architecture from there.
+
+**Landing page idea.** I referenced Superdesign's style library (Red Noir, dark/red
+glassmorphic) as a starting visual direction, then picked "Alpha Invest AI" as a
+stronger, more credible name than my first idea ("Fluid Money"), since it reads as
+a real finance term rather than a generic app name.
 
 ## How AI helped improve the idea
 
