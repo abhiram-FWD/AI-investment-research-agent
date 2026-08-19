@@ -81,3 +81,13 @@
   request after inactivity can take 30-50 seconds to respond. Documented in README.
 - Verified full flow live: landing page → real search → real Groq/FMP/Tavily data →
   verdict, all working end-to-end on the public URLs, not just localhost.
+
+  ## Post-submission: Groq model deprecation
+
+- App stopped working weeks after deployment — "model does not exist" error
+  on llama-3.3-70b-versatile.
+- Groq deprecated their Llama chat models; switched to openai/gpt-oss-120b,
+  their current recommended general-purpose model.
+- Reminder: LLM provider model names aren't permanently stable — worth
+  checking a provider's deprecation notices if a working integration
+  suddenly breaks.
