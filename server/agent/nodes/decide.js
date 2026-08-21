@@ -51,7 +51,7 @@ export async function decide(state) {
     apiKey: process.env.GROQ_API_KEY,
     model: "openai/gpt-oss-120b",
     temperature: 0.2,
-  }).withStructuredOutput(WriteupSchema);
+  }).withStructuredOutput(WriteupSchema, { method: "jsonMode" });
 
   const prompt = `You are finalizing an investment decision for ${state.resolvedEntity.name}.
 

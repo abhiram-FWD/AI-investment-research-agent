@@ -13,7 +13,7 @@ export async function synthesize(state) {
     apiKey: process.env.GROQ_API_KEY,
     model: "openai/gpt-oss-120b",
     temperature: 0.3,
-  }).withStructuredOutput(ThesisSchema);
+  }).withStructuredOutput(ThesisSchema, { method: "jsonMode" });
 
   const prompt = `You are an investment research analyst. Based on the data below, produce a structured
 investment thesis for ${state.resolvedEntity.name} (${state.resolvedEntity.ticker}).
